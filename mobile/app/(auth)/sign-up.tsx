@@ -2,9 +2,10 @@ import { styles } from "@/assets/styles/auth.styles";
 import { COLORS } from "@/constants/colors";
 import { useSignUp } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import * as React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -67,7 +68,7 @@ export default function SignUpScreen() {
     }
   };
 
-  if (true) {
+  if (pendingVerification) {
     return (
       <View style={styles.verificationContainer}>
         <Text style={styles.verificationTitle}>Verify your email</Text>
@@ -82,16 +83,62 @@ export default function SignUpScreen() {
           </View>
         ) : null}
         <TextInput
-          style={[styles.verificationInput, error && styles.errorInput]}
           value={code}
-          placeholderTextColor={"#9A8478"}
+          style={[styles.verificationInput, error && styles.errorInput]}
+          placeholderTextColor="#9A8478"
           placeholder="Enter your verification code"
           onChangeText={(code) => setCode(code)}
         />
-        <TouchableOpacity onPress={onVerifyPress}>
-          <Text>Verify</Text>
+        <TouchableOpacity onPress={onVerifyPress} style={styles.button}>
+          <Text style={styles.buttonText}>Verify</Text>
         </TouchableOpacity>
       </View>
     );
   }
+
+  return (
+    <KeyboardAwareScrollView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Image
+          source={require("../../assets/images/revenue-i3.png")}
+          style={styles.illustration}
+        />
+        <Text style={styles.title}>Create Account</Text>
+        {error ? (
+          <View style={styles.errorBox}>
+            <Ionicons name="alert-circle" size={20} color={COLORS.expense} />
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity onPress={() => setError("")}>
+              <Ionicons name="close" size={20} color={COLORS.textLight} />
+            </TouchableOpacity>
+          </View>
+        ) : null}
+        <TextInput
+          style={[styles.input, error && styles.errorInput]}
+          placeholderTextColor="#9A8478"
+          autoCapitalize="none"
+          value={emailAddress}
+          placeholder="Enter email"
+          onChangeText={(email) => setEmailAddress(email)}
+        />
+        <TextInput
+          style={[styles.input, error && styles.errorInput]}
+          placeholderTextColor="#9A8478"
+          value={password}
+          placeholder="Enter password"
+          secureTextEntry={true}
+          onChangeText={(password) => setPassword(password)}
+        />
+        <TouchableOpacity onPress={onSignUpPress} style={styles.button}>
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
+        <View style={styles.footerContainer}>
+          <Text style={styles.footerText}>Already have an account?</Text>
+          <Link href="/sign-in">
+            <Text style={styles.linkText}>Sign in</Text>
+          </Link>
+        </View>
+      </View>
+    </KeyboardAwareScrollView>
+  );
 }
