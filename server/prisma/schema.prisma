@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Test {
-  id String @id @default(uuid())
+model Trasactions {
+  id        String   @unique @default(uuid())
+  userId    String
+  title     String
+  amount    Decimal
+  category  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

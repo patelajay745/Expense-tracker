@@ -8,6 +8,11 @@ app.get("/", (req, res) => {
 })
 app.use(express.urlencoded({ extended: true }))
 
+// import all the routes
+import { router as transactionRouter } from "@/routes/transactions"
+
+app.use("/api/v1/transaction", transactionRouter)
+
 app.use(errorHandler)
 
 export default app
