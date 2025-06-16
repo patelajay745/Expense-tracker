@@ -20,3 +20,5 @@ COPY ./prisma .
 
 EXPOSE 8081
 CMD ["node", "dist/index.js"]
+
+# 

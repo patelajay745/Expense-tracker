@@ -39,7 +39,7 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy code-summit-backend \
+          gcloud run deploy expense-tracker-backend \
               --image us-central1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCR_REPO_NAME }}/backend:latest \
               --platform managed \
               --port=8081 \
