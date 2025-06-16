@@ -34,7 +34,7 @@ jobs:
           PROJECT_ID: ${{vars.GCP_PROJECT_ID}}
           REPO_NAME: ${{ vars.GCR_REPO_NAME }}
         run: |-
-          docker build -t us-central1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest -f backend/Dockerfile server/.
+          docker build -t us-central1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest -f server/Dockerfile server/.
           docker push us-central1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/backend:latest
 
       - name: Deploy to Cloud Run
