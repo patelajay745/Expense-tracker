@@ -1,10 +1,25 @@
 import { SignOutButton } from "@/components/SignOutButton";
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
+import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
 export default function Page() {
   const { user } = useUser();
+  const { getToken } = useAuth();
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await getToken();
+        console.log("Token:", token);
+      } catch (err) {
+        console.error("Failed to fetch token", err);
+      }
+    };
+
+    fetchToken();
+  }, [getToken]);
 
   return (
     <View>

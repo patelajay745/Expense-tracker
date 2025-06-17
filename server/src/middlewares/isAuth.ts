@@ -3,14 +3,17 @@ import { clerkClient, getAuth } from '@clerk/express'
 
 export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
 
-    const auth = getAuth(req)
-    const userId = auth.userId
+    // const { userId } = req.auth || {};
 
-    if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' })
-    }
+    console.log(req)
+    console.log(req.auth)
+    // console.log(userId)
 
-    req.user = await clerkClient.users.getUser(userId!)
+    // if (!userId) {
+    //     res.status(401).json({ error: 'User not authenticated' })
+    // }
+
+    // req.user = await clerkClient.users.getUser(userId!)
 
     next()
 
