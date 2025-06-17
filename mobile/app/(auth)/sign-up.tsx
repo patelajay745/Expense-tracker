@@ -37,7 +37,11 @@ export default function SignUpScreen() {
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An error occured. Please try again");
+      }
     }
   };
 
@@ -64,7 +68,11 @@ export default function SignUpScreen() {
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An error occured. Please try again");
+      }
     }
   };
 
@@ -97,7 +105,12 @@ export default function SignUpScreen() {
   }
 
   return (
-    <KeyboardAwareScrollView style={{ flex: 1 }}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      style={{ flex: 1 }}
+      enableOnAndroid={true}
+      enableAutomaticScroll={true}
+    >
       <View style={styles.container}>
         <Image
           source={require("../../assets/images/revenue-i3.png")}
@@ -134,8 +147,10 @@ export default function SignUpScreen() {
         </TouchableOpacity>
         <View style={styles.footerContainer}>
           <Text style={styles.footerText}>Already have an account?</Text>
-          <Link href="/sign-in">
-            <Text style={styles.linkText}>Sign in</Text>
+          <Link href="/sign-in" asChild>
+            <TouchableOpacity>
+              <Text style={styles.linkText}>Sign in</Text>
+            </TouchableOpacity>
           </Link>
         </View>
       </View>
