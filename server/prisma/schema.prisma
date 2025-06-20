@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Trasactions {
-  id        String   @unique @default(uuid())
+  id        String   @id @unique @default(uuid())
   userId    String
   title     String
   amount    Decimal  @db.Decimal(10, 2)

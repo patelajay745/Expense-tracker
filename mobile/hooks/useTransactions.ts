@@ -1,8 +1,11 @@
+import { authFetch } from "@/utils/authFetch";
 import { useAuth } from "@clerk/clerk-expo";
 import { useCallback, useState } from "react"
 import { Alert } from "react-native";
 
-const api_Url = process.env.EXPO_BACKEND_URL;
+const api_Url = process.env.EXPO_PUBLIC_BACKEND_URL;
+
+console.log("api_Url", api_Url)
 
 export const useTransaction = (userId: string) => {
     const { getToken } = useAuth();
@@ -11,7 +14,7 @@ export const useTransaction = (userId: string) => {
     const [summary, setSummary] = useState({
         balance: 0,
         income: 0,
-        expenses: 0
+        expense: 0
     })
 
     const [isLoading, setIsLoading] = useState(true)
@@ -20,18 +23,12 @@ export const useTransaction = (userId: string) => {
         try {
             const token = await getToken();
 
-            console.log(token)
+            const res = await authFetch(`${api_Url}/transaction/${userId}`, token!);
 
-            const res = await fetch(`${api_Url}/transaction/${userId}`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            })
             const data = await res.json()
+
             console.log(data)
-            setTransaction(data)
+            setTransaction(data.data)
         } catch (error) {
             console.log(error)
         }
@@ -39,10 +36,11 @@ export const useTransaction = (userId: string) => {
 
     const fetchSummary = useCallback(async () => {
         try {
-            const res = await fetch(`${api_Url}/transaction/summary/${userId}`)
+            const token = await getToken();
+            const res = await authFetch(`${api_Url}/transaction/summary/${userId}`, token!)
             const data = await res.json()
-            console.log(data)
-            setSummary(data)
+            console.log("Sumary data:", data.data)
+            setSummary(data.data)
         } catch (error) {
             console.log(error)
         }
@@ -62,7 +60,8 @@ export const useTransaction = (userId: string) => {
 
     const deleteTransactions = async (id: string) => {
         try {
-            const res = await fetch(`${api_Url}/transaction/${id}`)
+            const token = await getToken();
+            const res = await authFetch(`${api_Url}/transaction/${id}`, token!)
             if (!res.ok) throw new Error("failed to delete transaction")
             loadData()
             Alert.alert("Success", "transaction deleted successfully")

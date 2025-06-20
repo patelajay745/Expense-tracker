@@ -8,7 +8,7 @@ import { Router } from "express";
 
 export const router = Router()
 
-const myLimitter = limitter(100, 15)
+const myLimitter = limitter(1000, 15)
 
 router.use(myLimitter)
 router.use(requireAuth())
