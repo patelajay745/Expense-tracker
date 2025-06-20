@@ -1,11 +1,8 @@
+import { api_Url } from "@/lib/api";
 import { authFetch } from "@/utils/authFetch";
 import { useAuth } from "@clerk/clerk-expo";
 import { useCallback, useState } from "react"
 import { Alert } from "react-native";
-
-const api_Url = process.env.EXPO_PUBLIC_BACKEND_URL;
-
-console.log("api_Url", api_Url)
 
 export const useTransaction = (userId: string) => {
     const { getToken } = useAuth();
@@ -26,8 +23,6 @@ export const useTransaction = (userId: string) => {
             const res = await authFetch(`${api_Url}/transaction/${userId}`, token!);
 
             const data = await res.json()
-
-            console.log(data)
             setTransaction(data.data)
         } catch (error) {
             console.log(error)
@@ -39,7 +34,6 @@ export const useTransaction = (userId: string) => {
             const token = await getToken();
             const res = await authFetch(`${api_Url}/transaction/summary/${userId}`, token!)
             const data = await res.json()
-            console.log("Sumary data:", data.data)
             setSummary(data.data)
         } catch (error) {
             console.log(error)
@@ -61,7 +55,9 @@ export const useTransaction = (userId: string) => {
     const deleteTransactions = async (id: string) => {
         try {
             const token = await getToken();
-            const res = await authFetch(`${api_Url}/transaction/${id}`, token!)
+            const res = await authFetch(`${api_Url}/transaction/${id}`, token!, {
+                method: "DELETE"
+            })
             if (!res.ok) throw new Error("failed to delete transaction")
             loadData()
             Alert.alert("Success", "transaction deleted successfully")

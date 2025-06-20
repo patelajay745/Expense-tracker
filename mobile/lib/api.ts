@@ -1,0 +1,1 @@
+export const api_Url = process.env.EXPO_PUBLIC_BACKEND_URL;

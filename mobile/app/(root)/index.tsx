@@ -11,16 +11,19 @@ import {
   Alert,
   FlatList,
   Image,
+  RefreshControl,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
 import TransactionItem, { ItemType } from "@/components/TransactionItem";
+import NoTransactionFound from "@/components/NoTransactionFound";
 
 export default function Page() {
   const { user } = useUser();
   const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
   const { transaction, summary, isLoading, loadData, deleteTransactions } =
     useTransaction(user!.id);
 
@@ -30,9 +33,9 @@ export default function Page() {
 
   // console.log("user:", user!.id);
   // console.log("transactions:", transaction);
-  console.log("summary:", summary);
+  // console.log("summary:", summary);
 
-  if (isLoading) return <PageLoader />;
+  if (isLoading && !refreshing) return <PageLoader />;
 
   const handleDelete = (id: string) => {
     Alert.alert(
@@ -43,10 +46,19 @@ export default function Page() {
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => deleteTransactions(id),
+          onPress: () => {
+            deleteTransactions(id);
+            onRefresh();
+          },
         },
       ]
     );
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadData();
+    setRefreshing(false);
   };
 
   return (
@@ -93,6 +105,11 @@ export default function Page() {
         renderItem={({ item }) => (
           <TransactionItem item={item} onDelete={handleDelete} />
         )}
+        ListEmptyComponent={<NoTransactionFound />}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </View>
   );
